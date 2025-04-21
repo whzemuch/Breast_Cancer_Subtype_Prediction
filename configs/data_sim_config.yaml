@@ -1,0 +1,23 @@
+data_dir: /home/CBBI/wangh5/_PyCharm/proj_dl/data/simulation
+omics:
+  methyl:
+    file: methyl.csv
+    dtype: float32
+    reshape:
+    - 50
+    - 100
+  mirna:
+    file: mirna.csv
+    dtype: float32
+  rna_exp:
+    file: rna_exp.csv
+    dtype: float32
+labels:
+  source: clinical.csv
+  column: subtype
+  class_map:
+    LumA: 0
+    LumB: 1
+    Basal: 2
+    HER2E: 3
+    Normal: 4

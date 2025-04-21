@@ -1,0 +1,38 @@
+data_dir: "./data/clean_data"  # Base directory containing all data_loader files
+
+omics:
+  # Methylation data_loader configuration
+  methyl:
+    file: "methy.csv"  # Filename
+    dtype: "float32"        # Data type (numpy compatible)
+    # reshape: [50, 100]    # Reshape to (samples, 1, 20, 25)
+
+  # mRNA expression data_loader
+  mirna:
+    file: "mirna.csv"
+    dtype: "float32" 
+    dim: 64 # No reshaping needed
+
+  # Protein expression data_loader
+  rna:
+    file: "exp.csv"
+    dtype: "float32"
+
+# Labels configuration
+labels:
+  file: "label.csv"       # Label file
+  dtype: "int16"           # Data type for labels
+  squeeze: true            # Remove single-dimensional entries
+
+loader:
+  batch_size: 64
+  num_workers: 8
+  seed: 42
+  splits:
+    train: 0.7
+    val: 0.15
+    test: 0.15
+
+
+
+

@@ -1,0 +1,61 @@
+seed: 42
+network:
+  model: "multiomics_trainer"
+  params:
+    # Updated to match model constructor parameters
+    mirna_dim: 500           # miRNA input dimension
+    rna_exp_dim: 500        # RNA expression input dimension
+    methy_shape: [50, 100]    # Methylation input shape
+    latent_dim: 128           # Shared latent dimension
+    num_classes: 4            # Number of output classes
+
+train:
+  n_epochs: 100               # Increased for meaningful convergence
+  batch_size: 64              # Updated for modern GPU capacities
+  lr: 0.0001                  # Adjusted learning rate
+  kl_weight: 0.1              # Beta parameter for KL loss
+  annealing_steps: 10000      # KL weight annealing steps
+  class_weights: null         # [Optional] Add class weights here  like [0.25, 0.25, 0.25, 0.25]
+  use_focal: true             # Enable focal loss
+  label_smoothing: 0.1        # Regularization parameter
+  grad_clip: 1.0              # Gradient clipping value. small datasize, use 5.0
+  checkpoint_interval: 5      # Save every 5 epochs
+
+data:
+  data_dir: "data/simulation"
+  modalities: ["methylation", "mirna", "rna_exp"]  # Explicit modality names
+  batch_size: 64
+  num_workers: 8              # Increased for better data loading
+  seed: 42
+  splits:
+    train: 0.7
+    val: 0.15
+    test: 0.15
+
+optimizer:
+  type: "AdamW"
+  weight_decay: 0.05          # Updated for better regularization
+  amsgrad: true               # Enable AMSGrad variant
+  betas: [0.9, 0.999]         # Explicit momentum parameters
+
+scheduler:
+  type: "CosineAnnealingLR"
+  t_max: 100                  # Matches n_epochs
+  eta_min: 1e-6               # Minimum learning rate
+
+dataset:
+  omics:
+    methyl:
+      file: "methyl.csv"
+      dtype: "float32"
+      reshape: [50, 100]
+    mirna:
+      file: "mirna.csv"
+      dtype: "float32"
+    rna:
+      file: "rna_exp.csv"
+      dtype: "float32"
+  labels:
+    file: "labels.csv"
+    dtype: "int64"
+    squeeze: true

@@ -1,0 +1,20 @@
+data_dir: "./data/clean_data"  # Base directory containing all data_loader files
+
+omics:
+  # Methylation data_loader configuration
+
+  # mRNA expression data_loader
+  mirna:
+    file: "mirna.csv"
+    dtype: "float32"        # No reshaping needed
+
+
+# Labels configuration
+labels:
+  file: "label.csv"       # Label file
+  dtype: "int16"           # Data type for labels
+  squeeze: true            # Remove single-dimensional entries
+
+
+
+

@@ -1,0 +1,39 @@
+# First ignore everything
+*
+
+# Then whitelist specific directories and files
+!.gitignore
+
+# Configs
+!configs/
+!configs/*.yaml
+
+# Source code directories
+!data_loader/
+!data_loader/*.py
+
+!losses/
+!losses/*.py
+
+!models/
+!models/*.py
+
+!tests/
+!tests/*.py
+
+!trainers/
+!trainers/*.py
+
+!utils/
+!utils/*.py
+
+# Root Python files
+!*.py
+!*.ipynb
+!*.sh
+
+# Specific other files you want to track
+!README.md
+
+
+
