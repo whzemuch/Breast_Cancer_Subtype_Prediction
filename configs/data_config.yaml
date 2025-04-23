@@ -28,8 +28,8 @@ loader:
   num_workers: 8
   seed: 42
   splits:
-    train: 0.7
-    val: 0.15
+    train: 0.60
+    val: 0.25
     test: 0.15
 
 

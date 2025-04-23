@@ -1,5 +1,5 @@
 from torch import nn
-from .convnext import  MiniConvNeXtMethylation
+from .convnext import MiniConvNeXtMethylation
 from .vae import VAEEncoder
 from .model_fusion import MultimodalFusion
 
@@ -17,8 +17,16 @@ class MultiOmicsClassifier(nn.Module):
         self.mirna_vae = VAEEncoder(mirna_dim, latent_dim)
         self.rna_vae = VAEEncoder(rna_exp_dim, latent_dim)
 
-        # Fusion & Classification
+        # LayerNorm for each modality
+        self.norm_methyl = nn.LayerNorm(latent_dim)
+        self.norm_mirna = nn.LayerNorm(latent_dim)
+        self.norm_rna = nn.LayerNorm(latent_dim)
+
+        # Fusion + normalization before classification
         self.fusion = MultimodalFusion(latent_dim)
+        self.norm_fused = nn.LayerNorm(latent_dim)
+
+        # Classifier head
         self.classifier = nn.Sequential(
             nn.Linear(latent_dim, 128),
             nn.ReLU(),
@@ -27,16 +35,22 @@ class MultiOmicsClassifier(nn.Module):
         )
 
     def forward(self, methyl, mirna, rna):
-        # Encode modalities
-        z_methyl = self.methy_encoder(methyl)
+        # Encode and normalize each modality
+        z_methyl = self.norm_methyl(self.methy_encoder(methyl))
         z_mirna, mu_mirna, logvar_mirna = self.mirna_vae(mirna)
+        z_mirna = self.norm_mirna(z_mirna)
         z_rna, mu_rna, logvar_rna = self.rna_vae(rna)
+        z_rna = self.norm_rna(z_rna)
 
-        # Fuse features
+        # Fuse and normalize
         fused = self.fusion([z_methyl, z_mirna, z_rna])
+        fused = self.norm_fused(fused)
+
+        # Classify
+        logits = self.classifier(fused)
 
         return {
-            'logits': self.classifier(fused),
+            'logits': logits,
             'mu_mirna': mu_mirna,
             'logvar_mirna': logvar_mirna,
             'mu_rna': mu_rna,
