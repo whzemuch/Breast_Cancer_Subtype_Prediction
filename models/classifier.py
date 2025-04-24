@@ -43,7 +43,9 @@ class MultiOmicsClassifier(nn.Module):
         z_rna = self.norm_rna(z_rna)
 
         # Fuse and normalize
+
         fused = self.fusion([z_methyl, z_mirna, z_rna])
+        # print(f"Fusion module attn_weights: {self.fusion.attn_weights.shape}")
         fused = self.norm_fused(fused)
 
         # Classify
