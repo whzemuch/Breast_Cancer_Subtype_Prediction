@@ -8,6 +8,11 @@
 !configs/
 !configs/*.yaml
 
+!/data
+/data/*
+!/data/clean_data
+!/data/clean_data/*.npz
+
 # Source code directories
 !data_loader/
 !data_loader/*.py
@@ -26,6 +31,10 @@
 
 !utils/
 !utils/*.py
+!utils/interpretability
+!utils/interpretability/*.py
+
+
 
 # Root Python files
 !*.py
