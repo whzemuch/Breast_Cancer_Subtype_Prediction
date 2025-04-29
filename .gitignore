@@ -1,21 +1,23 @@
 # First ignore everything
 *
 
-# Then whitelist specific directories and files
+# Then allow specific files and folders
 !.gitignore
 
 # Configs
 !configs/
 !configs/*.yaml
 
-!/data
-/data/*
-!/data/clean_data
-!/data/clean_data/*.npz
+# Data
+!/data/
+!/data/clean_data/
+!data/clean_data/*.npz
 
-# Source code directories
+# Source code
 !data_loader/
 !data_loader/*.py
+!images/
+!images/*.jpg
 
 !losses/
 !losses/*.py
@@ -23,26 +25,31 @@
 !models/
 !models/*.py
 
-!tests/
-!tests/*.py
-
 !trainers/
 !trainers/*.py
 
+!tests/
+!tests/*.py
+
 !utils/
 !utils/*.py
-!utils/interpretability
+utils/config_manager.py
+utils/train_config.py
+!utils/interpretability/
 !utils/interpretability/*.py
 
+# Callbacks
+!callbacks/
+!callbacks/*.py
 
-
-# Root Python files
+# Root level scripts
 !*.py
 !*.ipynb
 !*.sh
 
-# Specific other files you want to track
+# Documentation
 !README.md
+
 
 
 

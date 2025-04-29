@@ -8,7 +8,9 @@ class FocalLoss(nn.Module):
     def __init__(self, gamma=2.0, weight=None, label_smoothing=0.0):
         super().__init__()
         self.gamma = gamma
-        self.register_buffer('weight', torch.tensor(weight) if weight is not None else None)
+        # self.register_buffer('weight', torch.tensor(weight) if weight is not None else None)
+        self.register_buffer('weight', weight.clone().detach() if weight is not None else None)
+
         self.label_smoothing = label_smoothing
         self.epsilon = 1e-8  # For numerical stability
 

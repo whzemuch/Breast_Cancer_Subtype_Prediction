@@ -76,33 +76,42 @@ class BaseTrainer:
                 if val_loader:
                     print(f"🧪 Val Loss:   {val_loss:.4f}")
 
-
     def predict(self, dataloader, return_logits=False):
+        """Make predictions with deterministic behavior.
+
+        Args:
+            dataloader: DataLoader for prediction
+            return_logits: Whether to return raw logits
+
+        Returns:
+            Tuple of (predictions, targets) or (predictions, targets, logits)
+        """
+        # Ensure deterministic operations
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
         self.model.eval()
+
         predictions, targets = [], []
         logits_all = [] if return_logits else None
-    
+
         with torch.no_grad():
             for batch_data, batch_labels in dataloader:
                 batch_data = {k: v.to(self.device) for k, v in batch_data.items()}
                 batch_labels = batch_labels.to(self.device)
-    
+
                 outputs = self.model(**batch_data)
                 logits = outputs['logits']
-                pred_classes = torch.argmax(logits, dim=1)
-    
+                pred_classes = logits.argmax(dim=1)
+
                 predictions.append(pred_classes.cpu())
                 targets.append(batch_labels.cpu())
-    
+
                 if return_logits:
                     logits_all.append(logits.cpu())
-    
-        predictions = torch.cat(predictions)
-        targets = torch.cat(targets)
-    
+
+        # Simple explicit returns as preferred
         if return_logits:
-            return predictions, targets, torch.cat(logits_all)
-    
-        return predictions, targets
+            return torch.cat(predictions), torch.cat(targets), torch.cat(logits_all)
+        return torch.cat(predictions), torch.cat(targets)
 
 

@@ -7,6 +7,13 @@ class MultiOmicsLoss(nn.Module):
     def __init__(self, beta=0.1, class_weights=None, annealing_steps=10000,
                  use_focal=False, focal_gamma=2.0, label_smoothing=0.0, kl_epsilon=1e-8):
         super().__init__()
+
+        # Validate focal parameters
+        if use_focal and focal_gamma is None:
+            raise ValueError("focal_gamma must be specified when use_focal=True")
+        if not use_focal and focal_gamma is not None:
+            raise ValueError("focal_gamma should be None when use_focal=False")
+
         self.register_buffer('current_step', torch.tensor(0))
         self.target_beta = beta
         self.annealing_steps = annealing_steps
@@ -20,7 +27,8 @@ class MultiOmicsLoss(nn.Module):
 
         self.use_focal = use_focal
         self.label_smoothing = label_smoothing
-        self.focal_gamma = focal_gamma
+        self.focal_gamma = focal_gamma if use_focal else None
+
 
         if use_focal:
             self.ce_loss = FocalLoss(
